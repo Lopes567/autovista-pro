@@ -1,0 +1,75 @@
+import { useState, useEffect } from 'react';
+
+export default function Home() {
+  const [vehicles, setVehicles] = useState([]);
+
+  useEffect(() => {
+    fetch('https://autovista-backend.onrender.com/api/vehicles')
+      .then(res => res.json())
+      .then(data => setVehicles(data.slice(0, 6)));
+  }, []);
+
+  return (
+    <div style={{ backgroundColor: '#000', color: '#fff', minHeight: '100vh', fontFamily: 'Arial' }}>
+      <header style={{ textAlign: 'center', padding: '60px 20px' }}>
+        <h1 style={{ fontSize: '3rem', color: '#00b050' }}>AutoVista</h1>
+        <p style={{ color: '#ccc', margin: '20px 0' }}>O melhor site de carros está aqui</p>
+        <input
+          placeholder="Busque por marca, modelo..."
+          style={{
+            padding: '15px',
+            width: '80%',
+            maxWidth: '500px',
+            border: '2px solid #00b050',
+            borderRadius: '50px',
+            outline: 'none',
+            backgroundColor: 'transparent',
+            color: 'white',
+            textAlign: 'center'
+          }}
+        />
+      </header>
+
+      <main style={{ padding: '20px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
+        {vehicles.map(vehicle => (
+          <div key={vehicle._id} style={{
+            border: '1px solid #333',
+            borderRadius: '12px',
+            width: '300px',
+            overflow: 'hidden'
+          }}>
+            <img
+              src={vehicle.images?.[0] || 'https://via.placeholder.com/300x200'}
+              alt={vehicle.model}
+              style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+            />
+            <div style={{ padding: '15px' }}>
+              <h3 style={{ margin: '0', color: 'white' }}>{vehicle.brand} {vehicle.model}</h3>
+              <p style={{ color: '#ccc', margin: '5px 0' }}>{vehicle.year} • {vehicle.km?.toLocaleString()} km</p>
+              <p style={{ color: '#00b050', fontSize: '1.3rem', fontWeight: 'bold' }}>
+                R$ {vehicle.price?.toLocaleString('pt-BR')}
+              </p>
+              <a href={`/vehicles/${vehicle._id}`} style={{
+                display: 'block',
+                marginTop: '10px',
+                backgroundColor: '#000',
+                color: '#00b050',
+                padding: '10px',
+                textAlign: 'center',
+                border: '2px solid #00b050',
+                borderRadius: '8px',
+                textDecoration: 'none'
+              }}>
+                Ver Detalhes
+              </a>
+            </div>
+          </div>
+        ))}
+      </main>
+
+      <footer style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+        &copy; 2025 AutoVista. Todos os direitos reservados.
+      </footer>
+    </div>
+  );
+}
